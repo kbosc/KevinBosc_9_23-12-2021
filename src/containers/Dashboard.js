@@ -97,14 +97,14 @@ export default class {
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) {
       this.counter = 0;
-      console.log(1);
-      console.log(bill);
-      console.log(bills);
+      console.log("premier");
+      console.log(this.counter);
       console.log("---------------------");
     }
     if (this.id === undefined || this.id !== bill.id) {
       this.id = bill.id;
-      console.log(2);
+      console.log("second");
+      console.log(this.counter);
       console.log("---------------------");
     }
     if (this.counter % 2 === 0) {
@@ -115,7 +115,8 @@ export default class {
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
       this.counter++;
-      console.log(3);
+      console.log("troisieme");
+      console.log(this.counter);
       console.log("---------------------");
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
@@ -125,11 +126,17 @@ export default class {
       `);
       $(".vertical-navbar").css({ height: "120vh" });
       this.counter++;
+      console.log("else");
+      console.log(this.counter);
+      console.log("---------------------");
     }
     $("#icon-eye-d").click(this.handleClickIconEye);
     $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
     $("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
-    console.log("else");
+    this.counter++;
+    console.log("Finaly");
+    console.log(this.counter);
+    console.log("---------------------");
   }
 
   handleAcceptSubmit = (e, bill) => {
