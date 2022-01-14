@@ -97,15 +97,15 @@ export default class {
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) {
       this.counter = 0;
-      console.log("premier");
-      console.log(this.counter);
-      console.log("---------------------");
+      // console.log("premier");
+      // console.log(this.counter);
+      // console.log("---------------------");
     }
     if (this.id === undefined || this.id !== bill.id) {
       this.id = bill.id;
-      console.log("second");
-      console.log(this.counter);
-      console.log("---------------------");
+      // console.log("second");
+      // console.log(this.counter);
+      // console.log("---------------------");
     }
     if (this.counter % 2 === 0) {
       bills.forEach((b) => {
@@ -115,9 +115,6 @@ export default class {
       $(".dashboard-right-container div").html(DashboardFormUI(bill));
       $(".vertical-navbar").css({ height: "150vh" });
       this.counter++;
-      console.log("troisieme");
-      console.log(this.counter);
-      console.log("---------------------");
     } else {
       $(`#open-bill${bill.id}`).css({ background: "#0D5AE5" });
 
@@ -126,17 +123,10 @@ export default class {
       `);
       $(".vertical-navbar").css({ height: "120vh" });
       this.counter++;
-      console.log("else");
-      console.log(this.counter);
-      console.log("---------------------");
     }
     $("#icon-eye-d").click(this.handleClickIconEye);
     $("#btn-accept-bill").click((e) => this.handleAcceptSubmit(e, bill));
     $("#btn-refuse-bill").click((e) => this.handleRefuseSubmit(e, bill));
-    this.counter++;
-    console.log("Finaly");
-    console.log(this.counter);
-    console.log("---------------------");
   }
 
   handleAcceptSubmit = (e, bill) => {
@@ -167,23 +157,27 @@ export default class {
       $(`#status-bills-container${this.index}`).html(
         cards(filteredBills(bills, getStatus(this.index)))
       );
+      console.log("here");
       this.counter++;
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(90deg)" });
       $(`#status-bills-container${this.index}`).html("");
+      console.log("close ?");
       this.counter++;
     }
 
-    bills.forEach((bill) => {
+    filteredBills(bills, getStatus(this.index)).forEach((bill) => {
       $(`#open-bill${bill.id}`).click((e) =>
         this.handleEditTicket(e, bill, bills)
       );
+      console.log("open");
     });
 
     return bills;
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next*/
   getBillsAllUsers = () => {
     if (this.store) {
       return this.store
@@ -203,6 +197,7 @@ export default class {
   };
 
   // not need to cover this function by tests
+  /* istanbul ignore next*/
   updateBill = (bill) => {
     if (this.store) {
       return this.store

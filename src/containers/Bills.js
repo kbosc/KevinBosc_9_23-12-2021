@@ -62,18 +62,8 @@ export default class {
             }
           });
           console.log("length", bills.length);
-          ascendingExpense(bills);
           return bills;
         });
     }
   };
-}
-
-function ascendingExpense(bills) {
-  // bills.forEach((bill) => {
-  //   console.log(bill.amount);
-  // });
-  // bills.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
-  bills.sort((a, b) => new Date(a.date) - new Date(b.date));
-  // return new Date(b.date) - new Date(a.date);
 }
