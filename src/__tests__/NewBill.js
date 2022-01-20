@@ -9,7 +9,7 @@ import { ROUTES } from "../constants/routes";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import store from "../__mocks__/store.js";
 import { bills } from "../fixtures/bills";
-import { store as storeApi } from "./src/app/Store.js";
+// import { store as storeApi } from "./src/app/Store.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -23,78 +23,168 @@ describe("Given I am connected as an employee", () => {
           "user",
           JSON.stringify({
             type: "Employee",
-            email: "employee@tld.com",
-            password: "employee",
+            email: "yoann@bdl.com",
+            password: "azerty",
             status: "connected",
+          })
+        );
+
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = pathname;
+        };
+
+        const html = NewBillUI();
+        document.body.innerHTML = html;
+
+        const contentNewBill = new NewBill({
+          document,
+          onNavigate,
+          store: null,
+          localStorage: window.localStorage,
+        });
+
+        const handleChangeFile = jest.fn((e) =>
+          contentNewBill.handleChangeFile(e)
+        );
+
+        const inputFile = screen.getByTestId("file");
+        inputFile.addEventListener("click", handleChangeFile);
+
+        fireEvent.click(inputFile, {
+          target: {
+            files: [new File(["image"], "image", { type: "image/jpg" })],
+          },
+        });
+        expect(handleChangeFile).toBeCalled();
+        // Object.defineProperty(window, "localStorage", {
+        //   value: localStorageMock,
+        // });
+        // window.localStorage.setItem(
+        //   "user",
+        //   JSON.stringify({
+        //     type: "Employee",
+        //     email: "employee@tld.com",
+        //     password: "employee",
+        //     status: "connected",
+        //   })
+        // );
+        // const onNavigate = (pathname) => {
+        //   document.body.innerHTML = ROUTES({ pathname });
+        // };
+        // // const store = jest.fn();
+        // // const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1))
+        // // console.log(bills);
+        // const html = NewBillUI();
+        // document.body.innerHTML = html;
+        // const contentNewBill = new NewBill({
+        //   document,
+        //   onNavigate,
+        //   storeApi,
+        //   localStorage: window.localStorage,
+        // });
+        // const handleChangeFile = jest.fn(contentNewBill.handleChangeFile);
+        // const inputFile = screen.getByTestId("file");
+        // inputFile.addEventListener("click", handleChangeFile);
+        // fireEvent.click(inputFile, {
+        //   target: {
+        //     files: [
+        //       new File(["image.jpg"], "image.jpg", { type: "image/jpg" }),
+        //     ],
+        //   },
+        // });
+        // expect(handleChangeFile).toBeCalled();
+        // console.log("coucou");
+        // console.log(contentNewBill);
+      });
+    });
+    describe("When I select a wrong file through the file input", () => {
+      test("Then an alert message appears", async () => {
+        Object.defineProperty(window, "localStorage", {
+          value: localStorageMock,
+        });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
+            email: "yoann@bdl.com",
+            password: "azerty",
+            status: "connected",
+          })
+        );
+
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = pathname;
+        };
+
+        const html = NewBillUI();
+        document.body.innerHTML = html;
+
+        const contentNewBill = new NewBill({
+          document,
+          onNavigate,
+          store: null,
+          localStorage: window.localStorage,
+        });
+
+        const handleChangeFile = jest.fn((e) =>
+          contentNewBill.handleChangeFile(e)
+        );
+
+        const inputFile = screen.getByTestId("file");
+        inputFile.addEventListener("click", handleChangeFile);
+
+        fireEvent.click(inputFile, {
+          target: {
+            files: [new File(["image"], "image", { type: "image/js" })],
+          },
+        });
+        expect(handleChangeFile).toBeCalled();
+      });
+    });
+    //////////////////////////////////////////////////// handleSubmit ////////////////////////////////
+    describe("When I fill in a correct form", () => {
+      test("Then it should create a new bill and go back to Bills page", () => {
+        const html = NewBillUI();
+        document.body.innerHTML = html;
+        Object.defineProperty(window, "localStorage", {
+          value: localStorageMock,
+        });
+        window.localStorage.setItem(
+          "user",
+          JSON.stringify({
+            type: "Employee",
           })
         );
         const onNavigate = (pathname) => {
           document.body.innerHTML = ROUTES({ pathname });
         };
-        // const store = jest.fn();
-        // const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1))
-        // console.log(bills);
-        const html = NewBillUI();
-        document.body.innerHTML = html;
-        const contentNewBill = new NewBill({
+        const containerNewBill = new NewBill({
           document,
           onNavigate,
-          storeApi,
+          firestore: null,
           localStorage: window.localStorage,
         });
-        const handleChangeFile = jest.fn(contentNewBill.handleChangeFile);
-        const inputFile = screen.getByTestId("file");
-        inputFile.addEventListener("click", handleChangeFile);
-        fireEvent.click(inputFile, {
-          target: {
-            files: [
-              new File(["image.jpg"], "image.jpg", { type: "image/jpg" }),
-            ],
-          },
-        });
-        expect(handleChangeFile).toBeCalled();
-        console.log("coucou");
-        console.log(contentNewBill);
+
+        const handleSubmit = jest.spyOn(containerNewBill, "handleSubmit");
+
+        const form = screen.getByTestId("form-new-bill");
+        screen.getByTestId("expense-type").value = "Transports";
+        screen.getByTestId("expense-name").value = "Train Paris-Marseille";
+        screen.getByTestId("datepicker").value = "2022-01-15";
+        screen.getByTestId("amount").value = "80";
+        screen.getByTestId("vat").value = "70";
+        screen.getByTestId("pct").value = "20";
+        screen.getByTestId("commentary").value = "Seconde classe";
+        containerNewBill.fileName = "test.png";
+        containerNewBill.fileUrl = "https://test.com/test.png";
+
+        form.addEventListener("submit", handleSubmit);
+        fireEvent.submit(form);
+
+        expect(handleSubmit).toHaveBeenCalled();
+        expect(screen.getByText(/mes notes de frais/i)).toBeTruthy();
       });
     });
-    //////////////////////////////////////////////////// handleSubmit ////////////////////////////////
-    // describe("When I fill in a correct form", () => {
-    //   test("Then it should create a new bill and go back to Bills page", () => {
-    //     const html = NewBillUI();
-    //     document.body.innerHTML = html;
-    //     const onNavigate = (pathname) => {
-    //       document.body.innerHTML = ROUTES({ pathname });
-    //     };
-    //     const containerNewBill = new NewBill({
-    //       document,
-    //       onNavigate,
-    //       store: null,
-    //       localStorage: window.localStorage,
-    //       // localStorage: localStorageMock,
-    //     });
-
-    //     const handleSubmit = jest.spyOn(containerNewBill, "handleSubmit");
-    //     // const handleSubmit = jest.fn(containerNewBill.handleSubmit);
-
-    //     const form = screen.getByTestId("form-new-bill");
-    //     screen.getByTestId("expense-type").value = "Transports";
-    //     screen.getByTestId("expense-name").value = "Train Paris-Marseille";
-    //     screen.getByTestId("datepicker").value = "2022-01-17";
-    //     screen.getByTestId("amount").value = "80";
-    //     screen.getByTestId("vat").value = "70";
-    //     screen.getByTestId("pct").value = "20";
-    //     screen.getByTestId("commentary").value = "Seconde classe";
-    //     containerNewBill.fileName = "test.png";
-    //     containerNewBill.fileUrl = "https://test.com/test.png";
-
-    //     form.addEventListener("submit", handleSubmit);
-    //     fireEvent.submit(form);
-
-    //     expect(handleSubmit).toHaveBeenCalled();
-    //     // expect(screen.getByText("Mes notes de frais")).toBeTruthy();
-    //     expect(screen.getByText(/mes notes de frais/i)).toBeTruthy();
-    //   });
-    // });
   });
 });
 
