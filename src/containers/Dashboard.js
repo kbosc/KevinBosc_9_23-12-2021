@@ -97,15 +97,9 @@ export default class {
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) {
       this.counter = 0;
-      // console.log("premier");
-      // console.log(this.counter);
-      // console.log("---------------------");
     }
     if (this.id === undefined || this.id !== bill.id) {
       this.id = bill.id;
-      // console.log("second");
-      // console.log(this.counter);
-      // console.log("---------------------");
     }
     if (this.counter % 2 === 0) {
       bills.forEach((b) => {
@@ -157,12 +151,12 @@ export default class {
       $(`#status-bills-container${this.index}`).html(
         cards(filteredBills(bills, getStatus(this.index)))
       );
-      console.log("here");
+      // console.log("here");
       this.counter++;
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: "rotate(90deg)" });
       $(`#status-bills-container${this.index}`).html("");
-      console.log("close ?");
+      // console.log("close ?");
       this.counter++;
     }
 
@@ -170,7 +164,7 @@ export default class {
       $(`#open-bill${bill.id}`).click((e) =>
         this.handleEditTicket(e, bill, bills)
       );
-      console.log("open");
+      // console.log("open");
     });
 
     return bills;
