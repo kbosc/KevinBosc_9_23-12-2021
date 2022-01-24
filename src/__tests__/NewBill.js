@@ -221,7 +221,7 @@ describe("Given I am connected as an employee", () => {
         expect(screen.getByText(/mes notes de frais/i)).toBeTruthy();
       });
     });
-    describe("When I fill in a correct form", () => {
+    describe("When I fill in a correct form with pct value empty", () => {
       test("Then it should create a new bill and go back to Bills page", () => {
         const html = NewBillUI();
         document.body.innerHTML = html;
